@@ -104,9 +104,10 @@ input[type=date].date-inp:focus{border-color:var(--blue2)}
 /* ── KEHADIRAN TABLE ── */
 .kh-table{width:100%;border-collapse:collapse}
 .kh-table thead th{background:var(--surf2);padding:.5rem .75rem;text-align:left;font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--bdr);white-space:nowrap}
-.kh-table tbody tr{border-bottom:1px solid var(--bdr2);transition:background .1s}
-.kh-table tbody tr:hover{background:var(--surf2)}
-.kh-table tbody tr:last-child{border:none}
+.kh-table tbody tr{border-bottom:1.5px solid var(--bdr);transition:background .1s}
+.kh-table tbody tr:nth-child(even){background:var(--blue3)}
+.kh-table tbody tr:hover{background:#BFDBFE}
+.kh-table tbody tr:last-child{border-bottom:none}
 .kh-table td{padding:.45rem .75rem;vertical-align:middle}
 .td-no{font-size:11px;color:var(--ink4);width:36px;text-align:center}
 .td-nama{font-size:13px;font-weight:600;color:var(--ink);max-width:160px}
@@ -245,7 +246,7 @@ input[type=date].date-inp:focus{border-color:var(--blue2)}
     <input class="linp" id="loginPass" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="login-btn" onclick="doLogin()">Log Masuk →</button>
     <div class="login-err" id="loginErr">⚠️ Nama pengguna atau kata laluan salah</div>
-    <div class="demo-hint">Demo: <strong>admin</strong> / <strong>admin123</strong><br>atau daftar akaun baru dalam Tetapan</div>
+    <div class="demo-hint">Hubungi admin sekolah anda jika belum ada akaun.</div>
   </div>
 </div>
 
@@ -280,11 +281,25 @@ input[type=date].date-inp:focus{border-color:var(--blue2)}
       <label>Nama Sekolah / Organisasi</label><input id="sOrg" placeholder="cth: SMK Contoh Jaya">
       <label>Daerah / Negeri</label><input id="sDaerah" placeholder="cth: Tawau, Sabah">
       <label>Nama Pengetua / Pengarah</label><input id="sPengetua" placeholder="cth: Hj Ahmad bin Razali">
-      <label>Kata Laluan Admin Baru (kosong = tidak tukar)</label><input id="sPass" type="password" placeholder="kata laluan baru">
     </div>
     <div class="mbtns">
       <button class="mbtn cc" onclick="closeModal('modalSet')">Batal</button>
       <button class="mbtn ok" onclick="saveSet()">Simpan ✓</button>
+    </div>
+    <div id="stAdminSection" style="display:none;margin-top:18px;padding-top:16px;border-top:1px solid #e2e8f0">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">⚙ Urus Pengguna (Admin)</div>
+      <label class="lbl">Nama Pengguna Baru</label>
+      <input class="linp" id="stNuName" placeholder="cth: guru_ali" style="margin-bottom:8px">
+      <label class="lbl">Nama Penuh</label>
+      <input class="linp" id="stNuFull" placeholder="Nama penuh" style="margin-bottom:8px">
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:8px">Pasword dijana automatik (random) — dipaparkan selepas tambah.</div>
+      <select class="linp" id="stNuRole" style="margin-bottom:10px">
+        <option value="user">Pengguna</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button class="mbtn ok" style="width:100%;margin-bottom:10px" onclick="stAddUser()">+ Tambah Pengguna</button>
+      <div id="stAdmMsg" style="font-size:11px;margin-bottom:10px"></div>
+      <div id="stUserList"></div>
     </div>
   </div>
 </div>
@@ -295,7 +310,7 @@ input[type=date].date-inp:focus{border-color:var(--blue2)}
   <div class="t-org" id="tOrg">—</div>
   <div class="tsep" style="margin-left:auto"></div>
   <div class="t-user hide-m"><div class="t-av" id="tAv">A</div><span id="tUser">Admin</span></div>
-  <button class="tbtn hide-m" onclick="openModal('modalSet')">
+  <button class="tbtn hide-m" onclick="openSet()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Tetapan
   </button>
   <button class="tbtn hide-m" onclick="window.print()">
@@ -475,15 +490,75 @@ input[type=date].date-inp:focus{border-color:var(--blue2)}
 <div class="toast" id="toast"></div>
 
 <script>
-// ══ STORAGE ══
-const SK = 'stafftrack_';
-function get(k){try{return JSON.parse(localStorage.getItem(SK+k))}catch{return null}}
-function set(k,v){localStorage.setItem(SK+k,JSON.stringify(v))}
+// ══════════════════════════════════════════════
+// SUPABASE CONFIG + TENANT (SEKOLAH)
+// ══════════════════════════════════════════════
+var SB_URL='https://aowzftmdriukxbltjtpm.supabase.co';
+var SB_ANON_KEY='PASTE_ANON_KEY_DI_SINI'; // <-- ganti dengan anon key projek Supabase
+var SB_FN_ADMIN=SB_URL+'/functions/v1/stafftrack-admin';
+var urlParams=new URLSearchParams(window.location.search);
+var KOD_SEKOLAH=(urlParams.get('t')||'').trim().toUpperCase();
+function sbMakeEmail(username,kodSekolah){
+  var u=(username||'').trim().toLowerCase().replace(/[^a-z0-9_.]/g,'');
+  var k=(kodSekolah||'').trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  return u+'.'+k+'@cikgukita.internal';
+}
+var ST_SESS=null, ST_CU=null;
+var ST_SKEY='st_sess_v1_'+(KOD_SEKOLAH||'nokod');
+function loadSTSess(){try{return JSON.parse(localStorage.getItem(ST_SKEY))}catch(e){return null}}
+function saveSTSess(){localStorage.setItem(ST_SKEY,JSON.stringify(ST_SESS))}
+function clearSTSess(){localStorage.removeItem(ST_SKEY)}
+async function sbFetch(path,opts){
+  opts=opts||{};
+  var headers=Object.assign({'apikey':SB_ANON_KEY,'Content-Type':'application/json'},opts.headers||{});
+  headers['Authorization']='Bearer '+((ST_SESS&&ST_SESS.access_token)?ST_SESS.access_token:SB_ANON_KEY);
+  return fetch(SB_URL+path,Object.assign({},opts,{headers:headers}));
+}
+async function stAdmFn(action,payload){
+  var res=await fetch(SB_FN_ADMIN,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+ST_SESS.access_token,'apikey':SB_ANON_KEY},
+    body:JSON.stringify(Object.assign({action:action},payload||{}))
+  });
+  var d=await res.json();
+  if(!res.ok) throw new Error(d.error||'Ralat pelayan');
+  return d;
+}
+async function stSaveSchoolData(){
+  if(!ST_CU) return;
+  try{
+    await sbFetch('/rest/v1/stafftrack_school_data?kod_sekolah=eq.'+KOD_SEKOLAH, {
+      method:'PATCH', headers:{'Prefer':'return=minimal'},
+      body: JSON.stringify({staf: staf||[], rekod: rekod||{}, cfg: cfg||{}})
+    });
+  }catch(e){}
+}
+var _stSaveTimer=null;
+function stScheduleSave(){ clearTimeout(_stSaveTimer); _stSaveTimer=setTimeout(stSaveSchoolData,1200); }
+async function stLoadSchoolData(){
+  try{
+    var res = await sbFetch('/rest/v1/stafftrack_school_data?kod_sekolah=eq.'+KOD_SEKOLAH+'&select=staf,rekod,cfg', {method:'GET'});
+    if(res.ok){
+      var rows = await res.json();
+      if(rows.length){
+        staf = rows[0].staf || [];
+        rekod = rows[0].rekod || {};
+        cfg = Object.assign({org:'Sekolah/Organisasi Anda',daerah:'',pengetua:''}, rows[0].cfg||{});
+      } else {
+        await sbFetch('/rest/v1/stafftrack_school_data', {
+          method:'POST', headers:{'Prefer':'return=minimal'},
+          body: JSON.stringify({kod_sekolah: KOD_SEKOLAH, staf: [], rekod: {}, cfg: {org:'Sekolah/Organisasi Anda',daerah:'',pengetua:''}})
+        });
+        staf=[]; rekod={}; cfg={org:'Sekolah/Organisasi Anda',daerah:'',pengetua:''};
+      }
+    }
+  }catch(e){ staf=[]; rekod={}; }
+}
 
 // ══ STATE ══
-let cfg = get('cfg') || {org:'Sekolah/Organisasi Anda',daerah:'',pengetua:'',adminPass:'admin123',adminUser:'admin'};
-let staf = get('staf') || [];
-let rekod = get('rekod') || {};  // { 'YYYY-MM-DD': { stafId: {status,catatan} } }
+let cfg = {org:'Sekolah/Organisasi Anda',daerah:'',pengetua:''};
+let staf = [];
+let rekod = {};  // { 'YYYY-MM-DD': { stafId: {status,catatan} } }
 let curDate = todayStr();
 let loggedIn = false;
 let editStafId = null;
@@ -498,25 +573,130 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 function toast(m,d=2500){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),d)}
 
 // ══ AUTH ══
-function doLogin(){
+async function stFetchProfile(){
+  try{
+    var res=await sbFetch('/rest/v1/stafftrack_users?select=username,fullname,role,kod_sekolah,must_change_password&user_id=eq.'+ST_SESS.user_id,{method:'GET'});
+    if(!res.ok) return false;
+    var rows=await res.json();
+    if(!rows.length) return false;
+    ST_CU=rows[0];
+    return true;
+  }catch(e){ return false; }
+}
+async function stRefreshToken(){
+  if(!ST_SESS||!ST_SESS.refresh_token) return false;
+  var res=await sbFetch('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:ST_SESS.refresh_token})});
+  if(!res.ok) return false;
+  var d=await res.json();
+  ST_SESS={access_token:d.access_token,refresh_token:d.refresh_token,user_id:d.user.id};
+  saveSTSess();
+  return true;
+}
+async function stBoot(){
+  if(!KOD_SEKOLAH){
+    document.getElementById('loginErr').textContent='URL tiada kod sekolah (?t=KODSEKOLAH). Hubungi admin.';
+    document.getElementById('loginErr').style.display='block';
+    return;
+  }
+  ST_SESS=loadSTSess();
+  if(ST_SESS&&ST_SESS.access_token){
+    if(await stFetchProfile()){ await stEnterApp(); return; }
+    if(await stRefreshToken()&&await stFetchProfile()){ await stEnterApp(); return; }
+  }
+  clearSTSess(); ST_SESS=null; ST_CU=null;
+}
+async function doLogin(){
   const u=document.getElementById('loginUser').value.trim();
   const p=document.getElementById('loginPass').value;
-  if(u===cfg.adminUser&&p===cfg.adminPass){
-    loggedIn=true;
-    document.getElementById('loginWrap').style.display='none';
-    document.getElementById('topbar').classList.add('show');
-    document.getElementById('navbar').classList.add('show');
-    document.getElementById('mainWrap').classList.add('show');
-    document.getElementById('tOrg').textContent=cfg.org;
-    document.getElementById('tUser').textContent=u;
-    document.getElementById('tAv').textContent=ini(u);
-    document.getElementById('loginErr').style.display='none';
-    initApp();
-  } else {
-    document.getElementById('loginErr').style.display='block';
-  }
+  var errEl=document.getElementById('loginErr');
+  if(!KOD_SEKOLAH){errEl.textContent='URL tiada kod sekolah (?t=KODSEKOLAH).';errEl.style.display='block';return}
+  if(!u||!p){errEl.style.display='block';return}
+  var email=sbMakeEmail(u,KOD_SEKOLAH);
+  try{
+    var res=await sbFetch('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:email,password:p})});
+    if(!res.ok){errEl.textContent='Nama pengguna atau kata laluan salah.';errEl.style.display='block';return}
+    var d=await res.json();
+    ST_SESS={access_token:d.access_token,refresh_token:d.refresh_token,user_id:d.user.id};
+    saveSTSess();
+    if(!await stFetchProfile()){errEl.textContent='Akaun wujud tapi profil tidak dijumpai. Hubungi admin.';errEl.style.display='block';return}
+    errEl.style.display='none';
+    if(ST_CU.must_change_password){ stForcePwScreen(); return; }
+    await stEnterApp();
+  }catch(e){ errEl.textContent='Ralat sambungan.'; errEl.style.display='block'; }
 }
-function doLogout(){if(confirm('Log keluar?')){location.reload()}}
+async function stEnterApp(){
+  loggedIn=true;
+  await stLoadSchoolData();
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('topbar').classList.add('show');
+  document.getElementById('navbar').classList.add('show');
+  document.getElementById('mainWrap').classList.add('show');
+  document.getElementById('tOrg').textContent=cfg.org;
+  document.getElementById('tUser').textContent=ST_CU.fullname||ST_CU.username;
+  document.getElementById('tAv').textContent=ini(ST_CU.username);
+  initApp();
+}
+function doLogout(){if(confirm('Log keluar?')){clearSTSess();location.reload()}}
+
+function stForcePwScreen(){
+  var lw=document.getElementById('loginWrap');
+  var card=lw.querySelector('.login-card')||lw.querySelector('div');
+  card.innerHTML='<div style="font-size:17px;font-weight:800;margin-bottom:6px">Set Kata Laluan Baru</div>'+
+    '<div style="font-size:12.5px;color:#64748b;margin-bottom:14px">Kali pertama log masuk — sila tetapkan kata laluan baru.</div>'+
+    '<input id="fpwNew" type="password" placeholder="Kata laluan baru (min. 6 aksara)" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:8px;border:1px solid #cbd5e1;margin-bottom:10px">'+
+    '<input id="fpwConf" type="password" placeholder="Sahkan kata laluan" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:8px;border:1px solid #cbd5e1;margin-bottom:14px">'+
+    '<button onclick="stForcePwSubmit()" style="width:100%;padding:11px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer">Simpan &amp; Teruskan &rarr;</button>'+
+    '<div id="fpwErr" style="color:#ef4444;font-size:12px;margin-top:8px"></div>';
+}
+async function stForcePwSubmit(){
+  var nw=document.getElementById('fpwNew').value, cf=document.getElementById('fpwConf').value;
+  var err=document.getElementById('fpwErr');
+  if(nw.length<6){err.textContent='Min. 6 aksara.';return}
+  if(nw!==cf){err.textContent='Tidak sepadan.';return}
+  var res=await sbFetch('/auth/v1/user',{method:'PUT',body:JSON.stringify({password:nw})});
+  if(!res.ok){err.textContent='Gagal tukar. Cuba lagi.';return}
+  await sbFetch('/rest/v1/stafftrack_users?user_id=eq.'+ST_SESS.user_id,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({must_change_password:false})});
+  location.reload();
+}
+
+// ── Admin: urus pengguna (dalam modal Tetapan) ──
+async function stRenderUserList(){
+  var el=document.getElementById('stUserList'); if(!el)return;
+  el.innerHTML='Memuatkan...';
+  try{
+    var d=await stAdmFn('list_users');
+    el.innerHTML='';
+    d.users.forEach(function(u){
+      var row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:8px;font-size:11.5px;padding:6px 8px;background:#f8fafc;border-radius:8px;margin-bottom:5px';
+      row.innerHTML='<span style="font-weight:700;flex:1">'+(u.fullname||u.username)+' <span style="color:#94a3b8">@'+u.username+'</span></span>'
+        +'<span style="font-size:9px;padding:1px 6px;border-radius:8px;background:'+(u.role==='admin'?'#fef3c7;color:#92400e':'#dbeafe;color:#1e40af')+'">'+(u.role==='admin'?'Admin':'Pengguna')+'</span>'
+        +(u.must_change_password?'<span style="font-size:9px;color:#f59e0b">Belum set pasword</span>':'')
+        +(u.username===ST_CU.username?'<span style="font-size:9px;color:#94a3b8">Anda</span>'
+          :'<button onclick="stDelUser(\''+u.username+'\')" style="border:1px solid #fecaca;background:none;color:#dc2626;border-radius:6px;font-size:10px;padding:3px 8px;cursor:pointer">Buang</button>');
+      el.appendChild(row);
+    });
+  }catch(e){ el.innerHTML='<span style="color:#dc2626;font-size:11px">Ralat: '+e.message+'</span>'; }
+}
+async function stAddUser(){
+  var n=document.getElementById('stNuName').value.trim();
+  var fn=document.getElementById('stNuFull').value.trim();
+  var r=document.getElementById('stNuRole').value;
+  var m=document.getElementById('stAdmMsg');
+  if(!n||!fn){ m.innerHTML='<span style="color:#dc2626">Sila isi semua maklumat.</span>'; return; }
+  m.textContent='Mencipta akaun...';
+  try{
+    var d=await stAdmFn('create_user',{username:n,fullname:fn,role:r});
+    document.getElementById('stNuName').value=''; document.getElementById('stNuFull').value='';
+    m.innerHTML='<span style="color:#16a34a">✓ "'+d.username+'" dicipta.<br>Pasword: <b style="user-select:all">'+d.password+'</b><br>(Wajib ditukar bila log masuk kali pertama)</span>';
+    stRenderUserList();
+  }catch(e){ m.innerHTML='<span style="color:#dc2626">'+e.message+'</span>'; }
+}
+async function stDelUser(username){
+  if(!confirm('Padam pengguna "'+username+'"?'))return;
+  try{ await stAdmFn('delete_user',{username:username}); stRenderUserList(); }
+  catch(e){ alert('Gagal padam: '+e.message); }
+}
 
 // ══ INIT ══
 function initApp(){
@@ -546,7 +726,7 @@ function loadDemoStaf(){
     {id:uid(),nama:'Burhan Kadir',jawatan:'Guru',jabatan:'Sejarah',noStaf:'S015'},
   ];
   staf=demo;
-  set('staf',staf);
+  stScheduleSave();
   toast('✅ Data demo dimuatkan');
 }
 
@@ -556,7 +736,7 @@ function getDayRekod(){return rekod[curDate]||{}}
 function setDayRekod(sid,status,catatan){
   if(!rekod[curDate])rekod[curDate]={};
   rekod[curDate][sid]={status,catatan,masa:new Date().toISOString()};
-  set('rekod',rekod);
+  stScheduleSave();
 }
 
 // ══ INPUT PAGE ══
@@ -740,7 +920,7 @@ function renderHistory(){
 function sortHist(col){if(sortHistCol===col)sortHistAsc=!sortHistAsc;else{sortHistCol=col;sortHistAsc=true}renderHistory()}
 function delRekod(date,sid){
   if(!confirm('Padam rekod ini?'))return;
-  if(rekod[date]){delete rekod[date][sid];if(!Object.keys(rekod[date]).length)delete rekod[date];set('rekod',rekod);renderHistory();toast('Rekod dipadam')}
+  if(rekod[date]){delete rekod[date][sid];if(!Object.keys(rekod[date]).length)delete rekod[date];stScheduleSave();renderHistory();toast('Rekod dipadam')}
 }
 
 // ══ SETUP STAF ══
@@ -777,12 +957,12 @@ function saveStaf(){
   } else {
     staf.push({id:uid(),nama,jawatan:document.getElementById('mJawatan').value.trim(),noStaf:document.getElementById('mNoStaf').value.trim(),jabatan:document.getElementById('mJabatan').value.trim(),kontak:document.getElementById('mKontak').value.trim()});
   }
-  set('staf',staf);closeModal('modalStaf');renderSetupPage();renderTable();toast('✅ Staf disimpan!');
+  stScheduleSave();closeModal('modalStaf');renderSetupPage();renderTable();toast('✅ Staf disimpan!');
 }
 function delStaf(){
   if(!editStafId||!confirm('Padam staf ini? Rekod kehadiran akan dikekalkan.'))return;
   staf=staf.filter(s=>s.id!==editStafId);
-  set('staf',staf);closeModal('modalStaf');renderSetupPage();renderTable();toast('Staf dipadam');
+  stScheduleSave();closeModal('modalStaf');renderSetupPage();renderTable();toast('Staf dipadam');
 }
 function importCSV(){
   const lines=document.getElementById('csvImport').value.trim().split('\n');
@@ -791,19 +971,23 @@ function importCSV(){
     const [nama,jawatan,jabatan,noStaf]=line.split(',').map(s=>s.trim());
     if(nama){staf.push({id:uid(),nama,jawatan:jawatan||'',jabatan:jabatan||'',noStaf:noStaf||''});added++}
   });
-  set('staf',staf);renderSetupPage();renderTable();document.getElementById('csvImport').value='';
+  stScheduleSave();renderSetupPage();renderTable();document.getElementById('csvImport').value='';
   toast(`✅ ${added} staf diimport!`);
 }
 
 // ══ TETAPAN ══
-function openSet(){document.getElementById('sOrg').value=cfg.org;document.getElementById('sDaerah').value=cfg.daerah;document.getElementById('sPengetua').value=cfg.pengetua;document.getElementById('sPass').value='';openModal('modalSet')}
+function openSet(){
+  document.getElementById('sOrg').value=cfg.org;document.getElementById('sDaerah').value=cfg.daerah;document.getElementById('sPengetua').value=cfg.pengetua;
+  var admSec=document.getElementById('stAdminSection');
+  if(ST_CU && ST_CU.role==='admin'){ admSec.style.display='block'; stRenderUserList(); }
+  else { admSec.style.display='none'; }
+  openModal('modalSet');
+}
 function saveSet(){
   cfg.org=document.getElementById('sOrg').value.trim()||cfg.org;
   cfg.daerah=document.getElementById('sDaerah').value.trim();
   cfg.pengetua=document.getElementById('sPengetua').value.trim();
-  const np=document.getElementById('sPass').value;
-  if(np) cfg.adminPass=np;
-  set('cfg',cfg);
+  stScheduleSave();
   document.getElementById('tOrg').textContent=cfg.org;
   closeModal('modalSet');toast('✅ Tetapan disimpan!');
 }
@@ -840,9 +1024,23 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
 
 // Auto-login check (demo mode)
 document.addEventListener('DOMContentLoaded',()=>{
+  stBoot();
   // Auto advance date picker to today
   document.getElementById('datePicker').value=curDate;
 });
+</script>
+<script>
+// ── KEEP-ALIVE — pastikan Supabase tidak tidur ──────────────
+(function(){
+  var _kaUrl = typeof SUPA_URL !== 'undefined' ? SUPA_URL : (typeof SB_URL !== 'undefined' ? SB_URL : '');
+  var _kaKey = typeof SUPA_KEY !== 'undefined' ? SUPA_KEY : (typeof SB_KEY !== 'undefined' ? SB_KEY : '');
+  if (!_kaUrl || !_kaKey) return;
+  if (window._ekKaTimer) clearInterval(window._ekKaTimer);
+  window._ekKaTimer = setInterval(function(){
+    fetch(_kaUrl+'/rest/v1/', {headers:{'apikey':_kaKey,'Authorization':'Bearer '+_kaKey}}).catch(function(){});
+  }, 4*60*1000);
+  console.log('EduKit keep-alive started');
+})();
 </script>
 </body>
 </html>
